@@ -1,0 +1,194 @@
+// Prisma schema for GiftShop
+// Run: npx prisma migrate dev --name init
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  VENDOR
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  phone         String?
+  passwordHash  String
+  role          Role      @default(CUSTOMER)
+  createdAt     DateTime  @default(now())
+
+  addresses     Address[]
+  orders        Order[]
+  reviews       Review[]
+  wishlist      WishlistItem[]
+  cartItems     CartItem[]
+  vendor        Vendor?
+}
+
+model Vendor {
+  id          String    @id @default(cuid())
+  storeName   String
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id])
+  products    Product[]
+  createdAt   DateTime  @default(now())
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  imageUrl    String?
+  emoji       String?
+  displayOrder Int      @default(0)
+  showOnHome  Boolean   @default(true)
+  products    Product[]
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String
+  price       Decimal       @db.Decimal(10, 2)
+  stock       Int           @default(0)
+  categoryId  String
+  category    Category      @relation(fields: [categoryId], references: [id])
+  vendorId    String?
+  vendor      Vendor?       @relation(fields: [vendorId], references: [id])
+  isPersonalizable            Boolean  @default(false)
+  personalizationTextEnabled  Boolean  @default(false)
+  personalizationImageEnabled Boolean  @default(false)
+  images      ProductImage[]
+  reviews     Review[]
+  orderItems  OrderItem[]
+  wishlist    WishlistItem[]
+  cartItems   CartItem[]
+  createdAt   DateTime      @default(now())
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  url       String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  line1     String
+  line2     String?
+  city      String
+  postalCode String
+  country   String
+  isDefault Boolean  @default(false)
+  orders    Order[]
+}
+
+model Order {
+  id         String       @id @default(cuid())
+  userId     String
+  user       User         @relation(fields: [userId], references: [id])
+  addressId  String
+  address    Address      @relation(fields: [addressId], references: [id])
+  status     OrderStatus  @default(PENDING)
+  total      Decimal      @db.Decimal(10, 2)
+  items      OrderItem[]
+  payment    Payment?
+  couponId   String?
+  coupon     Coupon?      @relation(fields: [couponId], references: [id])
+  createdAt  DateTime     @default(now())
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  orderId   String   @unique
+  order     Order    @relation(fields: [orderId], references: [id])
+  provider  String   // "stripe" | "payhere" | "webxpay"
+  reference String
+  status    String
+  amount    Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+}
+
+model Coupon {
+  id         String   @id @default(cuid())
+  code       String   @unique
+  percentOff Int
+  expiresAt  DateTime
+  orders     Order[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  personalizationText     String?
+  personalizationImageUrl String?
+
+  @@unique([userId, productId])
+}
+
+model ContactInquiry {
+  id          String   @id @default(cuid())
+  queryType   String
+  fullName    String
+  email       String
+  mobile      String
+  message     String
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
