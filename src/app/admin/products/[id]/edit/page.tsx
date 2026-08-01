@@ -25,6 +25,9 @@ export default async function EditProductPage({ params }: { params: { id: string
           stock: product.stock.toString(),
           categoryId: product.categoryId,
           imageUrls: imageUrls,
+          isPersonalizable: product.isPersonalizable,
+          personalizationTextEnabled: product.personalizationTextEnabled,
+          personalizationImageEnabled: product.personalizationImageEnabled,
         }}
       />
     </div>
