@@ -212,7 +212,9 @@ export default function CategoryManager({
                 {cat.imageUrl ? "Replace image" : "Upload image"}
               </button>
               <input
-                ref={(el) => (fileInputRefs.current[cat.id] = el)}
+                ref={(el) => {
+                  fileInputRefs.current[cat.id] = el;
+                }}
                 type="file"
                 accept="image/jpeg,image/png,image/webp,image/gif"
                 className="hidden"
