@@ -11,8 +11,8 @@ import SiteFooter from "@/components/SiteFooter";
 import AccountDrawer from "@/components/AccountDrawer";
 
 export const metadata: Metadata = {
-  title: "GiftShop | Perfect Gifts for Every Occasion",
-  description: "A modern gift-selling e-commerce platform",
+  title: "Zepzo | Perfect Gifts for Every Occasion",
+  description: "Zepzo — a modern gift-selling e-commerce platform for Sri Lanka",
 };
 
 const quickCategories = [
@@ -47,7 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <header className="border-b bg-white sticky top-0 z-10">
             <div className="max-w-6xl mx-auto flex items-center justify-between gap-6 px-4 py-4">
               <Link href="/" className="text-xl font-bold text-brand-600 shrink-0">
-                GiftShop
+                Zepzo
               </Link>
 
               <form

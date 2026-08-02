@@ -10,7 +10,7 @@ type CurrencyContextValue = {
 
 const CurrencyContext = createContext<CurrencyContextValue | undefined>(undefined);
 
-const STORAGE_KEY = "giftshop_currency";
+const STORAGE_KEY = "zepzo_currency";
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrencyState] = useState<CurrencyCode>("LKR");

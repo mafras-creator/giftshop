@@ -8,18 +8,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary brand color - premium purple
+        // Primary brand color - Zepzo purple, anchored on #930dca
         brand: {
-          50: "#f5f1ff",
-          100: "#ede4ff",
-          200: "#dccbff",
-          300: "#c2a4ff",
-          400: "#a674ff",
-          500: "#8a47ff",
-          600: "#6e3bff",
-          700: "#5c2ce0",
-          800: "#4a24b3",
-          900: "#3d1f8f",
+          50: "#faf0fe",
+          100: "#f4ddfe",
+          200: "#e7b7fa",
+          300: "#d582f7",
+          400: "#be3ff3",
+          500: "#a70fe6",
+          600: "#930dca",
+          700: "#71079d",
+          800: "#560477",
+          900: "#3d0354",
         },
         // Accent color - used ONLY for high-conversion CTAs (checkout, pay, buy)
         accent: {
@@ -34,9 +34,9 @@ const config: Config = {
         pill: "999px",
       },
       boxShadow: {
-        soft: "0 4px 24px rgba(110, 59, 255, 0.08)",
-        "soft-lg": "0 12px 40px rgba(110, 59, 255, 0.14)",
-        glow: "0 0 0 4px rgba(110, 59, 255, 0.12)",
+        soft: "0 4px 24px rgba(147, 13, 202, 0.08)",
+        "soft-lg": "0 12px 40px rgba(147, 13, 202, 0.14)",
+        glow: "0 0 0 4px rgba(147, 13, 202, 0.12)",
       },
       transitionDuration: {
         250: "250ms",

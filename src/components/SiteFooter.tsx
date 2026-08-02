@@ -12,7 +12,7 @@ export default function SiteFooter() {
     <footer className="border-t mt-16 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
         <div>
-          <p className="font-bold text-brand-600 mb-3">GiftShop</p>
+          <p className="font-bold text-brand-600 mb-3">Zepzo</p>
           <p className="text-gray-500">
             Thoughtful gifts for every relationship and occasion, delivered with care.
           </p>
@@ -43,7 +43,7 @@ export default function SiteFooter() {
         </div>
       </div>
       <div className="border-t py-6 text-center text-xs text-gray-400">
-        © {new Date().getFullYear()} GiftShop. All rights reserved.
+        © {new Date().getFullYear()} Zepzo. All rights reserved.
       </div>
     </footer>
   );
