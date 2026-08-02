@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import TopCategoryBar from "@/components/TopCategoryBar";
 import SiteFooter from "@/components/SiteFooter";
 import AccountDrawer from "@/components/AccountDrawer";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export const metadata: Metadata = {
   title: "Zepzo | Perfect Gifts for Every Occasion",
@@ -33,6 +34,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const topBarCategories = await prisma.category.findMany({
     where: { showInTopBar: true },
     orderBy: { topBarOrder: "asc" },
+  });
+
+  const bottomNavItems = await prisma.bottomNavItem.findMany({
+    where: { active: true },
+    orderBy: { displayOrder: "asc" },
   });
 
   return (
@@ -81,8 +87,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
             {/* Mobile-only search row - full width, sits below the logo/icons row */}
             <form action="/shop" className="md:hidden px-4 pb-3">
-              <div className="flex items-center border rounded-lg px-3 py-2.5 bg-gray-50">
-                <Search size={16} className="text-gray-400 mr-2 shrink-0" />
+              <div className="flex items-center border border-gray-200 rounded-full px-4 py-2.5 bg-gray-50">
+                <Search size={16} className="text-accent-500 mr-2 shrink-0" />
                 <input
                   type="text"
                   name="q"
@@ -95,9 +101,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <TopCategoryBar categories={topBarCategories} />
           </header>
 
-          <main className="max-w-6xl mx-auto px-4 py-8 min-h-[60vh]">{children}</main>
+          <main className="max-w-6xl mx-auto px-4 py-8 min-h-[60vh] pb-24 md:pb-8">{children}</main>
 
           <SiteFooter />
+
+          <MobileBottomNav items={bottomNavItems} />
         </Providers>
       </body>
     </html>
