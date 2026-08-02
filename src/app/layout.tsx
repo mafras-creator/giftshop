@@ -60,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
               <div className="flex items-center gap-5 text-sm font-medium shrink-0">
                 <AccountDrawer />
-                <Link href="/wishlist" className="relative hidden sm:flex items-center gap-1 hover:text-brand-600">
+                <Link href="/wishlist" className="relative flex items-center gap-1 hover:text-brand-600">
                   <Heart size={18} />
                   {wishlistCount > 0 && (
                     <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 rounded-full bg-accent-500 text-white text-[10px] font-semibold flex items-center justify-center">
@@ -78,6 +78,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 </Link>
               </div>
             </div>
+
+            {/* Mobile-only search row - full width, sits below the logo/icons row */}
+            <form action="/shop" className="md:hidden px-4 pb-3">
+              <div className="flex items-center border rounded-lg px-3 py-2.5 bg-gray-50">
+                <Search size={16} className="text-gray-400 mr-2 shrink-0" />
+                <input
+                  type="text"
+                  name="q"
+                  placeholder="Search for gifts..."
+                  className="outline-none text-sm w-full bg-transparent"
+                />
+              </div>
+            </form>
 
             <TopCategoryBar categories={topBarCategories} />
           </header>

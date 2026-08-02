@@ -75,29 +75,26 @@ export default function HeroCarousel({ slides }: { slides: Slide[] }) {
             />
 
             {(slide.title || slide.subtitle || slide.buttonText) && (
-              <>
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-800/70 via-brand-700/30 to-transparent" />
-                <div className="absolute inset-0 flex items-center px-6 md:px-14">
-                  <div className="text-white max-w-md">
-                    {slide.title && (
-                      <h2 className="text-2xl md:text-4xl font-bold leading-tight mb-2">
-                        {slide.title}
-                      </h2>
-                    )}
-                    {slide.subtitle && (
-                      <p className="text-brand-100 text-sm md:text-base mb-4">{slide.subtitle}</p>
-                    )}
-                    {slide.buttonText && (
-                      <Link
-                        href={slide.linkUrl || "/shop"}
-                        className="inline-block bg-accent-500 text-white px-5 py-2.5 md:px-6 md:py-3 rounded-xl font-semibold text-sm md:text-base hover:bg-accent-600 transition shadow-soft-lg"
-                      >
-                        {slide.buttonText}
-                      </Link>
-                    )}
-                  </div>
+              <div className="absolute inset-0 flex items-center px-6 md:px-14">
+                <div className="text-white max-w-md drop-shadow-[0_2px_6px_rgba(0,0,0,0.55)]">
+                  {slide.title && (
+                    <h2 className="text-2xl md:text-4xl font-bold leading-tight mb-2">
+                      {slide.title}
+                    </h2>
+                  )}
+                  {slide.subtitle && (
+                    <p className="text-white/90 text-sm md:text-base mb-4">{slide.subtitle}</p>
+                  )}
+                  {slide.buttonText && (
+                    <Link
+                      href={slide.linkUrl || "/shop"}
+                      className="inline-block bg-accent-500 text-white px-5 py-2.5 md:px-6 md:py-3 rounded-xl font-semibold text-sm md:text-base hover:bg-accent-600 transition shadow-soft-lg"
+                    >
+                      {slide.buttonText}
+                    </Link>
+                  )}
                 </div>
-              </>
+              </div>
             )}
           </div>
         ))}
