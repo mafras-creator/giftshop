@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
+import CategoryGrid from "@/components/CategoryGrid";
+import HeroCarousel from "@/components/HeroCarousel";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import {
@@ -28,7 +30,7 @@ const services = [
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
 
-  const [bestsellers, homeCategories, wishlistItems] = await Promise.all([
+  const [bestsellers, homeCategories, banners, wishlistItems] = await Promise.all([
     prisma.product.findMany({
       include: { images: true, category: true },
       orderBy: { createdAt: "desc" },
@@ -36,6 +38,10 @@ export default async function HomePage() {
     }),
     prisma.category.findMany({
       where: { showOnHome: true },
+      orderBy: { displayOrder: "asc" },
+    }),
+    prisma.banner.findMany({
+      where: { active: true },
       orderBy: { displayOrder: "asc" },
     }),
     session
@@ -50,52 +56,35 @@ export default async function HomePage() {
 
   const trending = [...bestsellers].reverse();
 
+  // Fall back to one default slide if the admin hasn't added any banners yet,
+  // so the homepage never looks broken on a fresh install.
+  const heroSlides =
+    banners.length > 0
+      ? banners.map((b) => ({
+          id: b.id,
+          imageUrl: b.imageUrl,
+          mobileImageUrl: b.mobileImageUrl,
+          title: b.title,
+          subtitle: b.subtitle,
+          buttonText: b.buttonText,
+          linkUrl: b.linkUrl,
+        }))
+      : [
+          {
+            id: "default",
+            imageUrl: "https://picsum.photos/seed/luxuryhero/1600/700",
+            mobileImageUrl: "https://picsum.photos/seed/luxuryheromobile/800/900",
+            title: "Gifts that feel like magic.",
+            subtitle: "Curated, premium gifts for every celebration — delivered with care.",
+            buttonText: "Shop Now",
+            linkUrl: "/shop",
+          },
+        ];
+
   return (
     <div className="space-y-20">
       {/* Hero */}
-      <section className="relative rounded-card overflow-hidden bg-gradient-to-br from-brand-700 via-brand-600 to-brand-500 min-h-[560px] md:min-h-[680px] flex items-center">
-        <div className="absolute inset-0 opacity-20">
-          <img
-            src="https://picsum.photos/seed/luxuryhero/1600/900"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="relative grid md:grid-cols-2 gap-10 items-center px-8 md:px-16 py-16 w-full">
-          <div className="text-white">
-            <p className="text-brand-100 font-medium text-sm mb-4 uppercase tracking-[0.2em]">
-              The Art of Gifting
-            </p>
-            <h1 className="text-4xl md:text-6xl font-bold leading-[1.1] mb-6">
-              Gifts that feel<br /> like magic.
-            </h1>
-            <p className="text-brand-100 mb-8 max-w-md text-lg">
-              Curated, premium gifts for every celebration — delivered with care, wrapped with love.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/shop"
-                className="bg-accent-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-accent-600 transition shadow-soft-lg"
-              >
-                Shop Now
-              </Link>
-              <Link
-                href="/shop?category=personalized-gifts"
-                className="border-2 border-white/40 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition"
-              >
-                Explore Collections
-              </Link>
-            </div>
-          </div>
-          <div className="hidden md:block">
-            <img
-              src="https://picsum.photos/seed/heroluxury/700/700"
-              alt="Premium gift"
-              className="rounded-card shadow-soft-lg w-full h-[420px] object-cover"
-            />
-          </div>
-        </div>
-      </section>
+      <HeroCarousel slides={heroSlides} />
 
       {/* Services row */}
       <section>
@@ -112,36 +101,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Circular category navigation */}
+      {/* Category grid */}
       <section>
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold">Shop by Category</h2>
           <p className="text-gray-500 text-sm mt-1">Find the perfect gift, beautifully organized</p>
         </div>
-        <div className="flex flex-wrap justify-center gap-6 md:gap-8">
-          {homeCategories.map((c) => (
-            <Link
-              key={c.id}
-              href={`/shop?category=${c.slug}`}
-              className="group flex flex-col items-center gap-3 w-[70px] md:w-[100px]"
-            >
-              <div className="w-[55px] h-[55px] md:w-[100px] md:h-[100px] rounded-full bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center text-2xl md:text-4xl overflow-hidden group-hover:-translate-y-1 group-hover:shadow-glow group-hover:from-brand-200 group-hover:to-brand-100 transition-all duration-250">
-                {c.imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" />
-                ) : (
-                  <span>{c.emoji || "🎁"}</span>
-                )}
-              </div>
-              <p className="text-xs md:text-sm font-medium text-gray-700 text-center">{c.name}</p>
-            </Link>
-          ))}
-          {homeCategories.length === 0 && (
-            <p className="text-gray-400 text-sm">
-              No categories configured yet — add some from the admin dashboard.
-            </p>
-          )}
-        </div>
+        <CategoryGrid categories={homeCategories} />
       </section>
 
       {/* Trending */}

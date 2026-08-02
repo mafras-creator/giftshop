@@ -6,7 +6,7 @@ import { Search, Heart, ShoppingCart } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import CategoryNavBar from "@/components/CategoryNavBar";
+import TopCategoryBar from "@/components/TopCategoryBar";
 import SiteFooter from "@/components/SiteFooter";
 import AccountDrawer from "@/components/AccountDrawer";
 
@@ -14,16 +14,6 @@ export const metadata: Metadata = {
   title: "Zepzo | Perfect Gifts for Every Occasion",
   description: "Zepzo — a modern gift-selling e-commerce platform for Sri Lanka",
 };
-
-const quickCategories = [
-  { label: "Birthday", slug: "birthday-gifts" },
-  { label: "Anniversary", slug: "anniversary-gifts" },
-  { label: "Personalized", slug: "personalized-gifts" },
-  { label: "Flowers & Cakes", slug: "flowers-cakes" },
-  { label: "Gifts for Her", slug: "gifts-for-her" },
-  { label: "Gifts for Him", slug: "gifts-for-him" },
-  { label: "Corporate", slug: "corporate-gifts" },
-];
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -39,6 +29,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     cartCount = cartAgg._sum.quantity ?? 0;
     wishlistCount = wishlistCountResult;
   }
+
+  const topBarCategories = await prisma.category.findMany({
+    where: { showInTopBar: true },
+    orderBy: { topBarOrder: "asc" },
+  });
 
   return (
     <html lang="en">
@@ -84,7 +79,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </div>
 
-            <CategoryNavBar categories={quickCategories} />
+            <TopCategoryBar categories={topBarCategories} />
           </header>
 
           <main className="max-w-6xl mx-auto px-4 py-8 min-h-[60vh]">{children}</main>

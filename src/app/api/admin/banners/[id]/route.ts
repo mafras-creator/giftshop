@@ -5,11 +5,13 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
 const updateSchema = z.object({
-  name: z.string().min(2).optional(),
   imageUrl: z.string().min(1).optional(),
-  emoji: z.string().optional(),
-  showOnHome: z.boolean().optional(),
-  showInTopBar: z.boolean().optional(),
+  mobileImageUrl: z.string().nullable().optional(),
+  title: z.string().nullable().optional(),
+  subtitle: z.string().nullable().optional(),
+  buttonText: z.string().nullable().optional(),
+  linkUrl: z.string().nullable().optional(),
+  active: z.boolean().optional(),
 });
 
 async function requireAdmin() {
@@ -30,12 +32,12 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   }
 
-  const category = await prisma.category.update({
+  const banner = await prisma.banner.update({
     where: { id: params.id },
     data: parsed.data,
   });
 
-  return NextResponse.json({ category });
+  return NextResponse.json({ banner });
 }
 
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
@@ -44,14 +46,6 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
-  const productsUsingCategory = await prisma.product.count({ where: { categoryId: params.id } });
-  if (productsUsingCategory > 0) {
-    return NextResponse.json(
-      { error: `Can't delete — ${productsUsingCategory} product(s) still use this category. Move or delete them first.` },
-      { status: 409 }
-    );
-  }
-
-  await prisma.category.delete({ where: { id: params.id } });
+  await prisma.banner.delete({ where: { id: params.id } });
   return NextResponse.json({ success: true });
 }

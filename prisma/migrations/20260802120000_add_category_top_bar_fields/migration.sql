@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Category" ADD COLUMN     "showInTopBar" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "topBarOrder" INTEGER NOT NULL DEFAULT 0;

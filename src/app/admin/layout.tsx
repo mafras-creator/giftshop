@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { LayoutDashboard, Package, ShoppingBag, LayoutGrid, MessageSquare } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, LayoutGrid, MessageSquare, Image as ImageIcon } from "lucide-react";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -22,6 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/categories", label: "Categories", icon: LayoutGrid },
+    { href: "/admin/banners", label: "Banners", icon: ImageIcon },
     { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
     { href: "/admin/inquiries", label: "Inquiries", icon: MessageSquare, badge: unreadCount },
   ];
